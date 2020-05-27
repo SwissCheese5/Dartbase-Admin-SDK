@@ -1,89 +1,59 @@
-import 'package:firedart/auth/auth_gateway.dart';
 import 'package:firedart/auth/client.dart';
 import 'package:firedart/auth/service_account/service_account.dart';
-import 'package:firedart/auth/token_provider.dart';
-import 'package:firedart/auth/token_store.dart';
 import 'package:firedart/auth/user_gateway.dart';
 import 'package:http/http.dart' as http;
 
 /// For service accounts, you can use ServiceAccount.fromJson(String) or ServiceAccount.fromEnvironmentVariable(optional String)
 /// Using the environment variable implementation will crash if you are on a platform that dart:io does not support.
-///
-/// If you do not provide a service account, firebase will initialize you as an anonymous user unless you sign in with
-/// the signIn(String email, String password) method in this class.
 class FirebaseAuth {
   /* Singleton interface */
   static FirebaseAuth _instance;
 
-  static FirebaseAuth initialize(String apiKey, TokenStore tokenStore,
-      {ServiceAccount serviceAccount}) {
+  static Future<FirebaseAuth> initialize(String projectId, ServiceAccount serviceAccount) async {
     if (_instance != null) {
       throw Exception('FirebaseAuth instance was already initialized');
     }
-    _instance =
-        FirebaseAuth(apiKey, tokenStore, serviceAccount: serviceAccount);
+    _instance = FirebaseAuth(projectId, serviceAccount);
+    await _instance.init();
     return _instance;
   }
 
   static FirebaseAuth get instance {
     if (_instance == null) {
-      throw Exception(
-          "FirebaseAuth hasn't been initialized. Please call FirebaseAuth.initialize() before using it.");
+      throw Exception("FirebaseAuth hasn't been initialized. Please call FirebaseAuth.initialize() before using it.");
     }
     return _instance;
   }
 
   /* Instance interface */
-  final String apiKey;
+  final String projectId;
   final ServiceAccount serviceAccount;
 
   http.Client httpClient;
-  TokenProvider tokenProvider;
 
-  AuthGateway _authGateway;
   UserGateway _userGateway;
 
-  FirebaseAuth(this.apiKey, TokenStore tokenStore,
-      {this.httpClient, this.serviceAccount})
-      : assert(apiKey.isNotEmpty),
-        assert(tokenStore != null) {
+  FirebaseAuth(this.projectId, this.serviceAccount, {this.httpClient}) {
     httpClient ??= http.Client();
-    var keyClient = KeyClient(httpClient, apiKey);
-    tokenProvider = TokenProvider(keyClient, tokenStore);
-
-    _authGateway = AuthGateway(keyClient, tokenProvider);
-    _userGateway = UserGateway(keyClient, tokenProvider);
   }
 
-  bool get isSignedIn => tokenProvider.isSignedIn;
+  Future<void> init() async {
+    var accessToken = await serviceAccount.getAccessToken();
+    print(accessToken);
+    var adminClient = AdminClient(httpClient, {'authorization': 'Bearer ${accessToken.accessToken}'});
 
-  Stream<bool> get signInState => tokenProvider.signInState;
+    _userGateway = UserGateway(projectId, adminClient);
+  }
 
-  String get userId => tokenProvider.userId;
+  Future<void> requestEmailVerification() => _userGateway.requestEmailVerification();
 
-  Future<User> signUp(String email, String password) =>
-      _authGateway.signUp(email, password);
+  Future<void> changePassword(String password) => _userGateway.changePassword(password);
 
-  Future<User> signIn(String email, String password) =>
-      _authGateway.signIn(email, password);
+  Future<User> getUserById({String uid}) => _userGateway.getUserById(uid: uid);
 
-  void signOut() => tokenProvider.signOut();
-
-  Future<void> resetPassword(String email) => _authGateway.resetPassword(email);
-
-  Future<void> requestEmailVerification() =>
-      _userGateway.requestEmailVerification();
-
-  Future<void> changePassword(String password) =>
-      _userGateway.changePassword(password);
-
-  Future<User> getUser({String uid}) => _userGateway.getUser(uid: uid);
-
-  Future<void> updateProfile({String displayName, String photoUrl}) =>
-      _userGateway.updateProfile(displayName, photoUrl);
+  Future<void> updateProfile({String displayName, String photoUrl}) => _userGateway.updateProfile(displayName, photoUrl);
 
   Future<void> deleteAccount() async {
     await _userGateway.deleteAccount();
-    signOut();
   }
 }

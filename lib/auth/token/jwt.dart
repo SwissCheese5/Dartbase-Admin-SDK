@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:firedart/auth/firebase_auth.dart';
-import 'package:openid_client/openid_client.dart';
 
 import 'rsa.dart';
 
@@ -23,22 +22,16 @@ class Jwt {
 
   Jwt(this.token) : _tokenParts = token.split(' ').last.split('.');
 
-  Future<bool> validate(String projectId, Map<String, String> certificates,
-      {bool enforceEmailVerification = false,
-      bool checkRevoked = false}) async {
-    // Google can validate the token for us and we can compare the results to revoke it.
-    // Otherwise, do local validation so we don't use network bandwidth and deal with latency.
+  // Google can validate the token for us and we can compare the results to revoke it.
+  // Otherwise, do local validation so we don't use network bandwidth and deal with latency.
+  Future<void> validate(FirebaseAuth auth, String projectId, Map<String, String> certificates,
+      {bool enforceEmailVerification = false, bool checkRevoked = false}) async {
     if (checkRevoked) {
-      var user = await FirebaseAuth.instance.getUser(uid: userId);
+      var user = await auth.getUserById();
 
-      if (user.tokensValidAfterTime != null) {
-        var issuer = await Issuer.discover(Issuer.firebase(projectId));
-        var client = Client(issuer, projectId);
-
-        var credential = client.createCredential(idToken: token);
-
-        final authTimeUtc = credential.idToken.claims.authTime;
-        final validSinceUtc = user.tokensValidAfterTime;
+      if (user.validSince != null) {
+        final authTimeUtc = DateTime.fromMillisecondsSinceEpoch(_payload.issueTime);
+        final validSinceUtc = user.validSince;
         if (authTimeUtc.isBefore(validSinceUtc)) {
           throw RevokedTokenException();
         }
@@ -78,13 +71,13 @@ class Jwt {
       throw Exception('Unrecognized certificate id: ${_header.certificateId}');
     }
 
-    _rsaMap[_header.certificateId] ??=
-        Rsa.fromCertificate(certificates[_header.certificateId]);
+    _rsaMap[_header.certificateId] ??= Rsa.fromCertificate(certificates[_header.certificateId]);
     var rsa = _rsaMap[_header.certificateId];
-    var verified =
-        rsa.verify('${_tokenParts[0]}.${_tokenParts[1]}', _tokenParts[2]);
+    var verified = rsa.verify('${_tokenParts[0]}.${_tokenParts[1]}', _tokenParts[2]);
 
-    return verified;
+    if (!verified) {
+      throw Exception('Could not verify the token against its signature');
+    }
   }
 }
 
@@ -126,5 +119,4 @@ class EmailVerificationException implements Exception {
   final message = 'Email has not been verified';
 }
 
-Map<String, dynamic> _parse(String tokenPart) =>
-    jsonDecode(utf8.decode(relaxedBase64Decode(tokenPart)));
+Map<String, dynamic> _parse(String tokenPart) => jsonDecode(utf8.decode(relaxedBase64Decode(tokenPart)));

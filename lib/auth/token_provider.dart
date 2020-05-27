@@ -7,7 +7,7 @@ import 'package:firedart/auth/token_store.dart';
 const _tokenExpirationThreshold = Duration(seconds: 30);
 
 class TokenProvider {
-  final KeyClient client;
+  final AdminClient client;
   final TokenStore _tokenStore;
 
   StreamController<bool> _signInStateStreamController;
@@ -25,9 +25,7 @@ class TokenProvider {
   Stream<bool> get signInState => _signInStateStreamController.stream;
 
   Future<String> get idToken async {
-    if (_tokenStore.expiry
-        .subtract(_tokenExpirationThreshold)
-        .isBefore(DateTime.now().toUtc())) {
+    if (_tokenStore.expiry.subtract(_tokenExpirationThreshold).isBefore(DateTime.now().toUtc())) {
       await _refresh();
     }
     return _tokenStore.idToken;

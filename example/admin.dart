@@ -13,8 +13,7 @@ Future main() async {
   /// ServiceAccount.serviceAccountFromFile(filePath);
 
   /// Alternatively:
-  FirebaseAuth.initialize(apiKey, VolatileStore(),
-      serviceAccount: ServiceAccount.fromJson(r'''
+  await FirebaseAuth.initialize(projectId, ServiceAccount.fromJson(r'''
       <Project Settings -> Service Accounts -> generate new private key>
       Paste the json here
     '''));
@@ -33,8 +32,7 @@ Future main() async {
   var document = await ref.get();
   print('snapshot: ${document['value']}');
 
-  print(
-      'Sleeping for 30 seconds. You can make changes to test/doc in the UI console');
+  print('Sleeping for 30 seconds. You can make changes to test/doc in the UI console');
   await Future.delayed((const Duration(seconds: 30)));
   print('closing the connection');
   await Firestore.instance.close();

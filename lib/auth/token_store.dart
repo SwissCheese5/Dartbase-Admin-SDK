@@ -11,8 +11,7 @@ abstract class TokenStore {
 
   bool get hasToken => _token != null;
 
-  void setToken(
-      String userId, String idToken, String refreshToken, int expiresIn) {
+  void setToken(String userId, String idToken, String refreshToken, int expiresIn) {
     assert(idToken != null && refreshToken != null && expiresIn != null);
     var expiry = DateTime.now().add(Duration(seconds: expiresIn));
     _token = Token(userId, idToken, refreshToken, expiry);
@@ -25,8 +24,7 @@ abstract class TokenStore {
 
   /// Force refresh - useful for testing
   void expireToken() {
-    _token = Token(
-        _token._userId, _token._idToken, _token._refreshToken, DateTime.now());
+    _token = Token(_token._userId, _token._idToken, _token._refreshToken, DateTime.now());
     write(_token);
   }
 

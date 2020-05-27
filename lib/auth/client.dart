@@ -17,8 +17,7 @@ class VerboseClient extends http.BaseClient {
     print((request as http.Request).body);
 
     var response = await _client.send(request);
-    print(
-        '<-- ${response.statusCode} ${response.reasonPhrase} ${response.request.url}');
+    print('<-- ${response.statusCode} ${response.reasonPhrase} ${response.request.url}');
     var loggedStream = response.stream.map((event) {
       print(utf8.decode(event));
       return event;
@@ -37,28 +36,23 @@ class VerboseClient extends http.BaseClient {
   }
 }
 
-class KeyClient extends http.BaseClient {
+class AdminClient extends http.BaseClient {
   final http.Client client;
-  final String apiKey;
+  final Map<String, String> metadata;
 
-  KeyClient(this.client, this.apiKey);
+  AdminClient(this.client, this.metadata);
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) {
-    if (!request.url.queryParameters.containsKey('key')) {
-      var query = Map<String, String>.from(request.url.queryParameters)
-        ..['key'] = apiKey;
-      var url = Uri.https(request.url.authority, request.url.path, query);
-      request = http.Request(request.method, url)
-        ..headers.addAll(request.headers)
-        ..bodyBytes = (request as http.Request).bodyBytes;
+    if (!request.headers.containsKey('authorization')) {
+      request.headers.addAll(metadata);
     }
     return client.send(request);
   }
 }
 
 class UserClient extends http.BaseClient {
-  final KeyClient client;
+  final AdminClient client;
   final TokenProvider tokenProvider;
 
   UserClient(this.client, this.tokenProvider);
@@ -68,7 +62,7 @@ class UserClient extends http.BaseClient {
     var body = (request as http.Request).bodyFields;
     request = http.Request(request.method, request.url)
       ..headers['content-type'] = 'application/x-www-form-urlencoded'
-      ..bodyFields = {...body, 'idToken': await tokenProvider.idToken};
+      ..bodyFields = {...body, if (!body.containsKey('idToken')) 'idToken': await tokenProvider.idToken};
     return client.send(request);
   }
 }
