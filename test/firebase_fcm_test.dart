@@ -13,8 +13,6 @@ Future main() async {
 
   setUpAll(() async {
     firebase = await Firebase.initialize(projectId, await ServiceAccount.fromFile(serviceAccountPath));
-
-    await FirebaseAuth.initialize();
     fcm = FCM(firebase: firebase, fcmConfig: FCMConfig(firebase.projectId));
   });
 

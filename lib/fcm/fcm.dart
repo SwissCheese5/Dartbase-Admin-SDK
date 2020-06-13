@@ -30,7 +30,7 @@ class FCM {
   static FCM initialize(
       {Firebase firebase, FCMConfig fcmConfig}) {
     assert(!initialized,
-    'Firestore global instance is already initialized. Do not call this twice or create a local instance via FCM()');
+    'FCM global instance is already initialized. Do not call this twice or create a local instance via FCM()');
 
     _instance = FCM(
         firebase: firebase ?? Firebase.instance, fcmConfig: fcmConfig);
@@ -39,7 +39,7 @@ class FCM {
 
   static FCM get instance {
     assert(initialized,
-    "Firestore hasn't been initialized. Call Firestore.initialize() before using this global instance. Alternatively, create a local instance via Firestore() and use that.");
+    "FCM hasn't been initialized. Call Firestore.initialize() before using this global instance. Alternatively, create a local instance via FCM() and use that.");
 
     return _instance;
   }
@@ -50,16 +50,16 @@ class FCM {
 
   FCM({@required this.firebase, @required this.fcmConfig})
       : assert(firebase != null || Firebase.initialized,
-  'Firebase global instance not initialized, run Firebase.initialize().\nAlternatively, provide a local instance via Firestore.initialize(firebase: <firebase instance>)'),
-        assert(fcmConfig != null, 'Firebase Cloud Messaging configuration is missing.');
+  'Firebase global instance not initialized, run Firebase.initialize().\nAlternatively, provide a local instance via FCM.initialize(firebase: <firebase instance>)'),
+        assert(fcmConfig != null, 'Firebase Cloud Messaging configuration is missing. You can initiate it with FCMConfig(...) and pass it here: FCM(fcmConfig: <FCMConfig object> ...)');
 
   /// https://firebase.google.com/docs/cloud-messaging/send-message#send-messages-to-specific-devices
   ///
   /// Throws a V1FcmError if the requests fails or server replies an error.
   ///
-  /// Returns ID string in format projects/{project_id}/messages/{message_id}
-  /// if the request is successful.
-  /// Example: "projects/myproject-b5ae1/messages/0:1500415314455276%31bd1c9631bd1c96"
+  /// Returns an ID string in format projects/{project_id}/messages/{message_id}
+  /// if the request is successful. It uniquely identifies the message.
+  /// ID string example: "projects/myproject-b5ae1/messages/0:1500415314455276%31bd1c9631bd1c96"
   Future<String> send(V1Message message) async {
     var request = http.Request(FCMConfig.method, Uri(
       scheme: FCMConfig.scheme,
@@ -67,7 +67,7 @@ class FCM {
       path: fcmConfig.path,
     ));
     request.body = json.encode({'message': message.toJson()});;
-    
+
     var response = await firebase.client.send(request);
     var responseContent = await response.stream.bytesToString();
     if (response.statusCode >= 400) {
