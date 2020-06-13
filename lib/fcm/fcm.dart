@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:meta/meta.dart';
 
-import '../base/client.dart';
 import '../base/firebase.dart';
 import 'message.dart';
 
@@ -22,30 +22,36 @@ class FCMConfig {
 }
 
 class FCM {
-  final Firebase _firebase;
-  final FCMConfig _fcmConfig;
+  /* Singleton instance */
+  static FCM _instance;
 
-  FCM(this._firebase, this._fcmConfig);
+  static bool get initialized => _instance != null;
 
-  Future<void> init() async {
-    var accessToken = await _firebase.serviceAccount.getAccessToken();
-    _firebase.client = AdminClient(
-        _firebase.httpClient,
-        {
-          'Content-Type': 'application/json',
-          'authorization': 'Bearer ${accessToken.accessToken}',
-        });
+  static FCM initialize(
+      {Firebase firebase, FCMConfig fcmConfig}) {
+    assert(!initialized,
+    'Firestore global instance is already initialized. Do not call this twice or create a local instance via FCM()');
+
+    _instance = FCM(
+        firebase: firebase ?? Firebase.instance, fcmConfig: fcmConfig);
+    return _instance;
   }
 
-  http.Request _createRequest(String body) {
-    var request = http.Request(FCMConfig.method, Uri(
-      scheme: FCMConfig.scheme,
-      host: FCMConfig.host,
-      path: _fcmConfig.path,
-    ));
-    request.body = body;
-    return request;
+  static FCM get instance {
+    assert(initialized,
+    "Firestore hasn't been initialized. Call Firestore.initialize() before using this global instance. Alternatively, create a local instance via Firestore() and use that.");
+
+    return _instance;
   }
+
+  /* Instance interface */
+  final Firebase firebase;
+  final FCMConfig fcmConfig;
+
+  FCM({@required this.firebase, @required this.fcmConfig})
+      : assert(firebase != null || Firebase.initialized,
+  'Firebase global instance not initialized, run Firebase.initialize().\nAlternatively, provide a local instance via Firestore.initialize(firebase: <firebase instance>)'),
+        assert(fcmConfig != null, 'Firebase Cloud Messaging configuration is missing.');
 
   /// https://firebase.google.com/docs/cloud-messaging/send-message#send-messages-to-specific-devices
   ///
@@ -55,9 +61,14 @@ class FCM {
   /// if the request is successful.
   /// Example: "projects/myproject-b5ae1/messages/0:1500415314455276%31bd1c9631bd1c96"
   Future<String> send(V1Message message) async {
-    var body = json.encode({'message': message.toJson()});
-    var request = _createRequest(body);
-    var response = await _firebase.client.send(request);
+    var request = http.Request(FCMConfig.method, Uri(
+      scheme: FCMConfig.scheme,
+      host: FCMConfig.host,
+      path: fcmConfig.path,
+    ));
+    request.body = json.encode({'message': message.toJson()});;
+    
+    var response = await firebase.client.send(request);
     var responseContent = await response.stream.bytesToString();
     if (response.statusCode >= 400) {
       throw V1FcmError(responseContent);

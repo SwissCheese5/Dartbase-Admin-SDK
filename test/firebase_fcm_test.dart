@@ -15,7 +15,7 @@ Future main() async {
     firebase = await Firebase.initialize(projectId, await ServiceAccount.fromFile(serviceAccountPath));
 
     await FirebaseAuth.initialize();
-    fcm = FCM(firebase, FCMConfig(firebase.projectId));
+    fcm = FCM(firebase: firebase, fcmConfig: FCMConfig(firebase.projectId));
   });
 
   await test('Send message with token', () async {
