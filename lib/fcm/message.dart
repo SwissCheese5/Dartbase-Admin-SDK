@@ -5,8 +5,9 @@ import 'package:json_annotation/json_annotation.dart';
 part 'message.g.dart';
 
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages
+/// HTTP v1 protocol message
 @JsonSerializable(explicitToJson: true, includeIfNull: false)
-class V1Message {
+class Message {
   /// Output Only. The identifier of the message sent, in the format of
   /// projects/*/messages/{message_id}.
   String name;
@@ -16,16 +17,16 @@ class V1Message {
   /// { "name": "wrench", "mass": "1.3kg", "count": "3" }.
   Map<String, dynamic> data;
   /// Input only. Basic notification template to use across all platforms.
-  V1MessageNotification notification;
+  MessageNotification notification;
   /// Input only. Android specific options for messages sent through FCM
   /// connection server.
-  V1MessageAndroidConfig android;
+  MessageAndroidConfig android;
   /// Input only. Webpush protocol options.
-  V1MessageWebpushConfig webpush;
+  MessageWebpushConfig webpush;
   /// Input only. Apple Push Notification Service specific options.
-  V1MessageApnsConfig apns;
+  MessageApnsConfig apns;
   /// Input only. Template for FCM SDK feature options to use across all platforms.
-  V1MessageFcmOptions fcm_options;
+  MessageFcmOptions fcm_options;
 
   /// Union field target. Required. Input only. Target to send a message to.
   /// target can be only one of the following:
@@ -38,7 +39,7 @@ class V1Message {
   /// Condition to send a message to, e.g. "'foo' in topics && 'bar' in topics".
   String condition;
 
-  V1Message({
+  Message({
     this.name,
     this.data,
     this.notification,
@@ -51,15 +52,15 @@ class V1Message {
     this.condition,
   });
 
-  factory V1Message.fromJson(Map<String, dynamic> json) =>
-      _$V1MessageFromJson(json);
-  Map<String, dynamic> toJson() => _$V1MessageToJson(this);
+  factory Message.fromJson(Map<String, dynamic> json) =>
+      _$MessageFromJson(json);
+  Map<String, dynamic> toJson() => _$MessageToJson(this);
 }
 
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#notification
 /// Basic notification template to use across all platforms.
 @JsonSerializable(explicitToJson: true, includeIfNull: false)
-class V1MessageNotification {
+class MessageNotification {
   /// The notification's title.
   String title;
   /// The notification's body text.
@@ -72,17 +73,17 @@ class V1MessageNotification {
   /// image on Firebase Storage: https://firebase.google.com/pricing
   String image;
 
-  V1MessageNotification({this.title, this.body, this.image});
+  MessageNotification({this.title, this.body, this.image});
 
-  factory V1MessageNotification.fromJson(Map<String, dynamic> json) =>
-      _$V1MessageNotificationFromJson(json);
-  Map<String, dynamic> toJson() => _$V1MessageNotificationToJson(this);
+  factory MessageNotification.fromJson(Map<String, dynamic> json) =>
+      _$MessageNotificationFromJson(json);
+  Map<String, dynamic> toJson() => _$MessageNotificationToJson(this);
 }
 
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#androidconfig
 /// Android specific options for messages sent through FCM connection server.
 @JsonSerializable(includeIfNull: false)
-class V1MessageAndroidConfig {
+class MessageAndroidConfig {
   /// An identifier of a group of messages that can be collapsed, so that only
   /// the last message gets sent when delivery can be resumed. A maximum of 4
   /// different collapse keys is allowed at any given time.
@@ -112,14 +113,14 @@ class V1MessageAndroidConfig {
   /// { "name": "wrench", "mass": "1.3kg", "count": "3" }.
   Map<String, dynamic> data;
   /// Notification to send to android devices.
-  V1MessageAndroidNotification notification;
+  MessageAndroidNotification notification;
   /// Options for features provided by the FCM SDK for Android.
-  V1MessageAndroidFcmOptions fcm_options;
+  MessageAndroidFcmOptions fcm_options;
   /// If set to true, messages will be allowed to be delivered to the app while
   /// the device is in direct boot mode. See Support Direct Boot mode.
   bool direct_boot_ok;
 
-  V1MessageAndroidConfig({
+  MessageAndroidConfig({
     this.collapse_key,
     this.priority,
     this.ttl,
@@ -130,15 +131,15 @@ class V1MessageAndroidConfig {
     this.direct_boot_ok,
   });
 
-  factory V1MessageAndroidConfig.fromJson(Map<String, dynamic> json) =>
-      _$V1MessageAndroidConfigFromJson(json);
-  Map<String, dynamic> toJson() => _$V1MessageAndroidConfigToJson(this);
+  factory MessageAndroidConfig.fromJson(Map<String, dynamic> json) =>
+      _$MessageAndroidConfigFromJson(json);
+  Map<String, dynamic> toJson() => _$MessageAndroidConfigToJson(this);
 }
 
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#androidnotification
 /// Notification to send to android devices.
 @JsonSerializable(includeIfNull: false)
-class V1MessageAndroidNotification {
+class MessageAndroidNotification {
   /// The notification's title. If present, it will override
   /// google.firebase.fcm.v1.Notification.title.
   String title;
@@ -295,13 +296,13 @@ class V1MessageAndroidNotification {
   /// Settings to control the notification's LED blinking rate and color if LED
   /// is available on the device. The total blinking time is controlled by the
   /// OS.
-  V1MessageLightSettings light_settings;
+  MessageLightSettings light_settings;
   /// Contains the URL of an image that is going to be displayed in a
   /// notification. If present, it will override
   /// google.firebase.fcm.v1.Notification.image.
   String image;
 
-  V1MessageAndroidNotification({
+  MessageAndroidNotification({
     this.title,
     this.body,
     this.icon,
@@ -329,19 +330,19 @@ class V1MessageAndroidNotification {
     this.image,
   });
 
-  factory V1MessageAndroidNotification.fromJson(Map<String, dynamic> json) =>
-      _$V1MessageAndroidNotificationFromJson(json);
-  Map<String, dynamic> toJson() => _$V1MessageAndroidNotificationToJson(this);
+  factory MessageAndroidNotification.fromJson(Map<String, dynamic> json) =>
+      _$MessageAndroidNotificationFromJson(json);
+  Map<String, dynamic> toJson() => _$MessageAndroidNotificationToJson(this);
 }
 
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#lightsettings
 /// Settings to control notification LED.
 @JsonSerializable(includeIfNull: false)
-class V1MessageLightSettings {
+class MessageLightSettings {
 
   /// Required. Set color of the LED with google.type.Color.
   @JsonKey(required: true)
-  V1MessageColor color;
+  MessageColor color;
   /// Required. Along with light_off_duration, define the blink rate of LED
   /// flashes. Resolution defined by proto.Duration
   ///
@@ -357,21 +358,21 @@ class V1MessageLightSettings {
   @JsonKey(required: true)
   String light_off_duration;
 
-  V1MessageLightSettings({
+  MessageLightSettings({
     @required this.color,
     @required this.light_on_duration,
     @required this.light_off_duration,
   });
 
-  factory V1MessageLightSettings.fromJson(Map<String, dynamic> json) =>
-      _$V1MessageLightSettingsFromJson(json);
-  Map<String, dynamic> toJson() => _$V1MessageLightSettingsToJson(this);
+  factory MessageLightSettings.fromJson(Map<String, dynamic> json) =>
+      _$MessageLightSettingsFromJson(json);
+  Map<String, dynamic> toJson() => _$MessageLightSettingsToJson(this);
 }
 
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#color
 /// Represents a color in the RGBA color space.
 @JsonSerializable(includeIfNull: false)
-class V1MessageColor {
+class MessageColor {
   /// The amount of red in the color as a value in the interval [0, 1].
   double red;
   /// The amount of green in the color as a value in the interval [0, 1].
@@ -391,38 +392,38 @@ class V1MessageColor {
   /// alpha value had been explicitly given with a value of 1.0).
   double alpha;
 
-  V1MessageColor({
+  MessageColor({
     this.red,
     this.green,
     this.blue,
     this.alpha,
   });
 
-  factory V1MessageColor.fromJson(Map<String, dynamic> json) =>
-      _$V1MessageColorFromJson(json);
-  Map<String, dynamic> toJson() => _$V1MessageColorToJson(this);
+  factory MessageColor.fromJson(Map<String, dynamic> json) =>
+      _$MessageColorFromJson(json);
+  Map<String, dynamic> toJson() => _$MessageColorToJson(this);
 }
 
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#androidfcmoptions
 /// Options for features provided by the FCM SDK for Android.
 @JsonSerializable(includeIfNull: false)
-class V1MessageAndroidFcmOptions {
+class MessageAndroidFcmOptions {
   /// Label associated with the message's analytics data.
   String analytics_label;
 
-  V1MessageAndroidFcmOptions({
+  MessageAndroidFcmOptions({
     this.analytics_label,
   });
 
-  factory V1MessageAndroidFcmOptions.fromJson(Map<String, dynamic> json) =>
-      _$V1MessageAndroidFcmOptionsFromJson(json);
-  Map<String, dynamic> toJson() => _$V1MessageAndroidFcmOptionsToJson(this);
+  factory MessageAndroidFcmOptions.fromJson(Map<String, dynamic> json) =>
+      _$MessageAndroidFcmOptionsFromJson(json);
+  Map<String, dynamic> toJson() => _$MessageAndroidFcmOptionsToJson(this);
 }
 
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#webpushconfig
 /// Webpush protocol options.
 @JsonSerializable(includeIfNull: false)
-class V1MessageWebpushConfig {
+class MessageWebpushConfig {
   /// HTTP headers defined in webpush protocol. Refer to Webpush protocol for
   /// supported headers, e.g. "TTL": "15".
   ///
@@ -441,44 +442,44 @@ class V1MessageWebpushConfig {
   /// google.firebase.fcm.v1.Notification.body.
   Object notification;
   /// Options for features provided by the FCM SDK for Web.
-  V1MessageWebpushFcmOptions fcm_options;
+  MessageWebpushFcmOptions fcm_options;
 
-  V1MessageWebpushConfig({
+  MessageWebpushConfig({
     this.headers,
     this.data,
     this.notification,
     this.fcm_options,
   });
 
-  factory V1MessageWebpushConfig.fromJson(Map<String, dynamic> json) =>
-      _$V1MessageWebpushConfigFromJson(json);
-  Map<String, dynamic> toJson() => _$V1MessageWebpushConfigToJson(this);
+  factory MessageWebpushConfig.fromJson(Map<String, dynamic> json) =>
+      _$MessageWebpushConfigFromJson(json);
+  Map<String, dynamic> toJson() => _$MessageWebpushConfigToJson(this);
 }
 
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#webpushfcmoptions
 /// Options for features provided by the FCM SDK for Web.
 @JsonSerializable(includeIfNull: false)
-class V1MessageWebpushFcmOptions {
+class MessageWebpushFcmOptions {
   /// The link to open when the user clicks on the notification. For all URL
   /// values, HTTPS is required.
   String link;
   /// Label associated with the message's analytics data.
   String analytics_label;
 
-  V1MessageWebpushFcmOptions({
+  MessageWebpushFcmOptions({
     this.link,
     this.analytics_label,
   });
 
-  factory V1MessageWebpushFcmOptions.fromJson(Map<String, dynamic> json) =>
-      _$V1MessageWebpushFcmOptionsFromJson(json);
-  Map<String, dynamic> toJson() => _$V1MessageWebpushFcmOptionsToJson(this);
+  factory MessageWebpushFcmOptions.fromJson(Map<String, dynamic> json) =>
+      _$MessageWebpushFcmOptionsFromJson(json);
+  Map<String, dynamic> toJson() => _$MessageWebpushFcmOptionsToJson(this);
 }
 
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#apnsconfig
 /// Apple Push Notification Service specific options.
 @JsonSerializable(includeIfNull: false)
-class V1MessageApnsConfig {
+class MessageApnsConfig {
   /// HTTP request headers defined in Apple Push Notification Service. Refer to
   /// APNs request headers for supported headers, e.g. "apns-priority": "10".
   ///
@@ -492,23 +493,23 @@ class V1MessageApnsConfig {
   /// { "name": "wrench", "mass": "1.3kg", "count": "3" }.
   Object payload;
   /// Options for features provided by the FCM SDK for iOS.
-  V1MessageApnsFcmOptions fcm_options;
+  MessageApnsFcmOptions fcm_options;
 
-  V1MessageApnsConfig({
+  MessageApnsConfig({
     this.headers,
     this.payload,
     this.fcm_options,
   });
 
-  factory V1MessageApnsConfig.fromJson(Map<String, dynamic> json) =>
-      _$V1MessageApnsConfigFromJson(json);
-  Map<String, dynamic> toJson() => _$V1MessageApnsConfigToJson(this);
+  factory MessageApnsConfig.fromJson(Map<String, dynamic> json) =>
+      _$MessageApnsConfigFromJson(json);
+  Map<String, dynamic> toJson() => _$MessageApnsConfigToJson(this);
 }
 
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#apnsfcmoptions
 /// Options for features provided by the FCM SDK for iOS.
 @JsonSerializable(includeIfNull: false)
-class V1MessageApnsFcmOptions {
+class MessageApnsFcmOptions {
   /// Label associated with the message's analytics data.
   String analytics_label;
   /// Contains the URL of an image that is going to be displayed in a
@@ -516,39 +517,39 @@ class V1MessageApnsFcmOptions {
   /// google.firebase.fcm.v1.Notification.image.
   String image;
 
-  V1MessageApnsFcmOptions({
+  MessageApnsFcmOptions({
     this.analytics_label,
   });
 
-  factory V1MessageApnsFcmOptions.fromJson(Map<String, dynamic> json) =>
-      _$V1MessageApnsFcmOptionsFromJson(json);
-  Map<String, dynamic> toJson() => _$V1MessageApnsFcmOptionsToJson(this);
+  factory MessageApnsFcmOptions.fromJson(Map<String, dynamic> json) =>
+      _$MessageApnsFcmOptionsFromJson(json);
+  Map<String, dynamic> toJson() => _$MessageApnsFcmOptionsToJson(this);
 }
 
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#fcmoptions
 /// Platform independent options for features provided by the FCM SDKs.
 @JsonSerializable(includeIfNull: false)
-class V1MessageFcmOptions {
+class MessageFcmOptions {
   /// Label associated with the message's analytics data.
   String analytics_label;
 
-  V1MessageFcmOptions({
+  MessageFcmOptions({
     this.analytics_label,
   });
 
-  factory V1MessageFcmOptions.fromJson(Map<String, dynamic> json) =>
-      _$V1MessageFcmOptionsFromJson(json);
-  Map<String, dynamic> toJson() => _$V1MessageFcmOptionsToJson(this);
+  factory MessageFcmOptions.fromJson(Map<String, dynamic> json) =>
+      _$MessageFcmOptionsFromJson(json);
+  Map<String, dynamic> toJson() => _$MessageFcmOptionsToJson(this);
 }
 
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/FcmError
 /// Message that may be returned in an error response to add details.
-class V1FcmError implements Exception {
+class FcmError implements Exception {
   /// Error code specifying why the message failed.
   /// https://firebase.google.com/docs/reference/fcm/rest/v1/ErrorCode
   String error_code;
 
-  V1FcmError(this.error_code);
+  FcmError(this.error_code);
 
   @override
   String toString() {
@@ -558,7 +559,7 @@ class V1FcmError implements Exception {
 
 /// https://firebase.google.com/docs/reference/fcm/rest/v1/ApnsError
 /// Error details directly from the Apple Push Notification service (APNs).
-class V1ApnsError implements Exception {
+class ApnsError implements Exception {
   /// Status code in the response from APNs. See APNs status codes for
   /// explanations of possible values.
   /// https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html#//apple_ref/doc/uid/TP40008194-CH11-SW15
@@ -568,18 +569,18 @@ class V1ApnsError implements Exception {
   /// https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html#//apple_ref/doc/uid/TP40008194-CH11-SW17
   String reason;
 
-  V1ApnsError(this.status_code, this.reason);
+  ApnsError(this.status_code, this.reason);
 }
 
 @JsonSerializable(includeIfNull: false)
-class V1Response {
+class Response {
   String name;
 
-  V1Response({
+  Response({
     this.name
   });
 
-  factory V1Response.fromJson(Map<String, dynamic> json) =>
-      _$V1ResponseFromJson(json);
-  Map<String, dynamic> toJson() => _$V1ResponseToJson(this);
+  factory Response.fromJson(Map<String, dynamic> json) =>
+      _$ResponseFromJson(json);
+  Map<String, dynamic> toJson() => _$ResponseToJson(this);
 }

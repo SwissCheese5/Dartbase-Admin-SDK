@@ -17,9 +17,9 @@ Future main() async {
   });
 
   await test('Send message with token', () async {
-    var message = V1Message(
+    var message = Message(
       token: cloudMessagingToken,
-      notification: V1MessageNotification(
+      notification: MessageNotification(
         title: 'test with token',
         body: 'Some body text here',
       ),
@@ -29,9 +29,9 @@ Future main() async {
   });
 
   await test('Send message with topic', () async {
-    var message = V1Message(
+    var message = Message(
       topic: cloudMessagingTopic,
-      notification: V1MessageNotification(
+      notification: MessageNotification(
         title: 'test with token',
         body: 'Some body text here',
       ),

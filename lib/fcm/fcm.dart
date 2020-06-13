@@ -60,7 +60,7 @@ class FCM {
   /// Returns an ID string in format projects/{project_id}/messages/{message_id}
   /// if the request is successful. It uniquely identifies the message.
   /// ID string example: "projects/myproject-b5ae1/messages/0:1500415314455276%31bd1c9631bd1c96"
-  Future<String> send(V1Message message) async {
+  Future<String> send(Message message) async {
     var request = http.Request(FCMConfig.method, Uri(
       scheme: FCMConfig.scheme,
       host: FCMConfig.host,
@@ -71,10 +71,10 @@ class FCM {
     var response = await firebase.client.send(request);
     var responseContent = await response.stream.bytesToString();
     if (response.statusCode >= 400) {
-      throw V1FcmError(responseContent);
+      throw FcmError(responseContent);
     }
 
-    var responseMessage = V1Response.fromJson(json.decode(responseContent));
+    var responseMessage = Response.fromJson(json.decode(responseContent));
     return responseMessage.name;
   }
 }
