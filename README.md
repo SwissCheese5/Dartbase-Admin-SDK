@@ -12,6 +12,7 @@ This library also uses these files from appsup-dart/firebase_admin to enable adm
 * Firebase Auth
 * Firestore
 * Firebase Storage
+* Firebase Cloud Messaging
 
 # INCOMPLETE README
 
@@ -114,6 +115,65 @@ Set the `PROTOBUF` and `GOOGLEAPIS` environment variables to point to your clone
 ```sh
 $ tool/regenerate.sh
 ```
+
+## Firebase Cloud Messaging
+
+The `FCM` class implements the necessary functionality for sending cloud messages.
+
+Make sure you've enabled `Cloud Messaging` in the `Firebase Console`, also enroll a test device there.
+You'll also need to go to open `Project Settings` and under the `Cloud Messaging` tab copy the `Server key`.
+
+### Usage
+
+You'll need to create a `test_config.dart` file:
+``` dart
+const projectId = "Project Settings -> General -> Project ID";
+const serviceAccountPath = 'Project Settings -> Service Accounts -> generate new private key -> download and get file path';
+const cloudMessagingServerKey = 'Project settings -> Cloud Messaging -> Server key';
+```
+
+Then in your main script:
+``` dart
+import 'package:dartbase/dartbase.dart';
+import 'package:dartbase/fcm/message.dart';
+
+main() async {
+  var firebase = await Firebase.initialize(projectId,
+      await ServiceAccount.fromFile(serviceAccountPath));
+  var fcm = FCM(firebase, FCMConfig(firebase.projectId));
+  const token = '<Your device token here>';
+  const topic = '<Choose a topic name>';
+
+  // Send to a token
+  var message = V1Message(
+    token: token,
+    notification: V1MessageNotification(
+      title: "plantyplants test",
+      body: "Some body text here",
+    ),
+  );
+  var nameTopicMessage = await fcm.send(message);
+
+  // Send to a topic
+  var message = V1Message(
+    topic: topic,
+    notification: V1MessageNotification(
+      title: "plantyplants test",
+      body: "Some body text here",
+    ),
+  );
+  var nameTopicMessage = await fcm.send(message);
+
+  return;
+}
+```
+
+Further usage examples can be found in the [integration tests](https://github.com/SwissCheese5/Dartbase-Admin-SDK/blob/master/test/firebase_fcm_test.dart).
+
+### Limitations
+
+* Doesn't support [batch send](https://firebase.google.com/docs/cloud-messaging/send-message#send-messages-to-multiple-devices).
+* Doesn't support receiving a cloud message.
 
 ## Debugging
 

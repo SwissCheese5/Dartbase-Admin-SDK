@@ -1,3 +1,6 @@
 const projectId = "Project Settings -> General -> Project ID";
 const storageUrl = 'Bucket name without gs://';
 const serviceAccountPath = 'Project Settings -> Service Accounts -> generate new private key -> download and get file path';
+const cloudMessagingServerKey = 'Project settings -> Cloud Messaging -> Server key';
+const cloudMessagingToken = 'Token for test device';
+const cloudMessagingTopic = 'Cloud Messaging Topic';
