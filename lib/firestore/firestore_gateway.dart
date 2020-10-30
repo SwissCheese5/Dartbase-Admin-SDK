@@ -19,7 +19,7 @@ class FirestoreGateway {
   StreamController<ListenRequest> streamController;
   Stream<ListenResponse> stream;
 
-  FirestoreGateway(this.firebase, {String databaseId = '(default'})
+  FirestoreGateway(this.firebase, {String databaseId = '(default)'})
       : database =
             'projects/${firebase.projectId}/databases/$databaseId/documents' {
     _setupClient();
