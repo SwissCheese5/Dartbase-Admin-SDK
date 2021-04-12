@@ -1,6 +1,6 @@
 name: dartbase_admin
 description: A dart-native implementation of the Firebase Admin SDK to enable administrive tasks to your firebase project.
-version: 0.1.4
+version: 0.1.5
 homepage: https://github.com/SwissCheese5/Dartbase-Admin-SDK
 repository: https://github.com/SwissCheese5/Dartbase-Admin-SDK
 
