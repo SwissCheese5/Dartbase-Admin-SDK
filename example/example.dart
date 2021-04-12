@@ -27,7 +27,7 @@ void main() async {
   await fcmExample();
 }
 
-void firestoreExample() async {
+Future<void> firestoreExample() async {
   /// Initialize the global firestore instance.
   /// Firestore fall back to the global firebase instance we initialized in main().
   Firestore.initialize();
@@ -46,7 +46,7 @@ void firestoreExample() async {
   print('snapshot: ${document['value']}');
 }
 
-void firebaseStorageExample() async {
+Future<void> firebaseStorageExample() async {
   /// FirebaseStorage doesn't have a global instance. You just get a bucket reference whenever you need it.
   var bucket = await FirebaseStorage.getBucket(storageUrl);
   var localFilePath = 'path/to/your/file.jpg';
@@ -59,7 +59,7 @@ void firebaseStorageExample() async {
   print(info.downloadLink);
 
   /// DOWNLOAD
-  await bucket.download('remoteDirectory/remoteFile.jpg', localFilePath);
+  //await bucket.download('remoteDirectory/remoteFile.jpg', localFilePath);
 
   /// LIST
   var list = await (await bucket.list(prefix: 'remoteDirectory/')).toList();
@@ -69,7 +69,7 @@ void firebaseStorageExample() async {
   await bucket.delete('remoteDirectory/remoteFile.jpg');
 }
 
-void authExample() async {
+Future<void> authExample() async {
   /// Initialize the global firebase auth instance.
   /// Firebase Auth will fall back to the global firebase instance we initialized in main().
   await FirebaseAuth.initialize();
@@ -91,7 +91,7 @@ void authExample() async {
   }
 }
 
-void fcmExample() async {
+Future<void> fcmExample() async {
   /// Initialize the global FCM instance.
   /// FCM fall back to the global firebase instance we initialized in main().
   await FCM.initialize();

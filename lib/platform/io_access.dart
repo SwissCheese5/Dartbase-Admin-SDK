@@ -12,7 +12,7 @@ class IOAccess extends AbstractPlatformAccess {
 
   @override
   String getEnvironmentVariable(String environmentVariable) =>
-      Platform.environment[environmentVariable];
+      Platform.environment[environmentVariable]!;
 
   @override
   Future<String> getStringFromFile(String filePath) async {

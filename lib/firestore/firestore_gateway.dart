@@ -11,13 +11,13 @@ import '../base/firebase.dart';
 import 'models.dart';
 
 class FirestoreGateway {
-  final String database;
-  final Firebase firebase;
+  late final String database;
+  late final Firebase firebase;
 
-  ClientChannel _channel;
-  FirestoreClient _client;
-  StreamController<ListenRequest> streamController;
-  Stream<ListenResponse> stream;
+  ClientChannel? _channel;
+  FirestoreClient? _client;
+  StreamController<ListenRequest>? streamController;
+  Stream<ListenResponse>? stream;
 
   FirestoreGateway(this.firebase, {String databaseId = '(default'})
       : database =
@@ -33,7 +33,7 @@ class FirestoreGateway {
       ..pageSize = pageSize
       ..pageToken = nextPageToken;
     var response =
-        await _client.listDocuments(request).catchError(_handleError);
+        await _client!.listDocuments(request).catchError(_handleError);
     var documents =
         response.documents.map((rawDocument) => Document(this, rawDocument));
     return Page(documents, response.nextPageToken);
@@ -53,10 +53,10 @@ class FirestoreGateway {
       ..database = database
       ..addTarget = target;
 
-    streamController.add(request);
+    streamController!.add(request);
 
     var map = <String, Document>{};
-    return stream
+    return stream!
         .where((response) =>
             response.hasDocumentChange() || response.hasDocumentDelete())
         .map((response) {
@@ -71,7 +71,7 @@ class FirestoreGateway {
   }
 
   Future<Document> createDocument(
-      String path, String documentId, fs.Document document) async {
+      String path, String? documentId, fs.Document document) async {
     var split = path.split('/');
     var parent = split.sublist(0, split.length - 1).join('/');
     var collectionId = split.last;
@@ -83,12 +83,12 @@ class FirestoreGateway {
       ..document = document;
 
     var response =
-        await _client.createDocument(request).catchError(_handleError);
+        await _client!.createDocument(request).catchError(_handleError);
     return Document(this, response);
   }
 
   Future<Document> getDocument(path) async {
-    var rawDocument = await _client
+    var rawDocument = await _client!
         .getDocument(GetDocumentRequest()..name = path)
         .catchError(_handleError);
     return Document(this, rawDocument);
@@ -106,14 +106,14 @@ class FirestoreGateway {
       request.updateMask = mask;
     }
 
-    await _client.updateDocument(request).catchError(_handleError);
+    await _client!.updateDocument(request).catchError(_handleError);
   }
 
-  Future<void> deleteDocument(String path) => _client
+  Future<void> deleteDocument(String path) => _client!
       .deleteDocument(DeleteDocumentRequest()..name = path)
       .catchError(_handleError);
 
-  Stream<Document> streamDocument(String path) {
+  Stream<Document?> streamDocument(String path) {
     _initStream();
 
     final documentsTarget = Target_DocumentsTarget()..documents.add(path);
@@ -122,9 +122,9 @@ class FirestoreGateway {
       ..database = database
       ..addTarget = target;
 
-    streamController.add(request);
+    streamController!.add(request);
 
-    return stream
+    return stream!
         .where((response) => (response.hasDocumentChange() &&
                 response.documentChange.document.name == path ||
             (response.hasDocumentDelete() || response.hasDocumentRemove()) &&
@@ -139,7 +139,7 @@ class FirestoreGateway {
     final runQuery = RunQueryRequest()
       ..structuredQuery = structuredQuery
       ..parent = fullPath.substring(0, fullPath.lastIndexOf('/'));
-    final response = _client.runQuery(runQuery);
+    final response = _client!.runQuery(runQuery);
     return await response
         .where((event) => event.hasDocument())
         .map((event) => Document(this, event.document))
@@ -151,7 +151,7 @@ class FirestoreGateway {
     var options = JwtServiceAccountAuthenticator(
             firebase.serviceAccount.serviceAccountString)
         .toCallOptions;
-    _client = FirestoreClient(_channel, options: options);
+    _client = FirestoreClient(_channel!, options: options);
     streamController = null;
     stream = null;
   }
@@ -172,8 +172,8 @@ class FirestoreGateway {
 
   void _initStream() {
     streamController ??= StreamController<ListenRequest>();
-    stream ??= _client
-        .listen(streamController.stream,
+    stream ??= _client!
+        .listen(streamController!.stream,
             options: CallOptions(
                 metadata: {'google-cloud-resource-prefix': database}))
         .handleError(_handleError)
@@ -182,7 +182,7 @@ class FirestoreGateway {
 
   // close the connection
   Future<void> close() async {
-    await streamController.close();
-    await _channel.shutdown();
+    await streamController!.close();
+    await _channel!.shutdown();
   }
 }

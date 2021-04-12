@@ -8,8 +8,8 @@ part of 'message.dart';
 
 Message _$MessageFromJson(Map<String, dynamic> json) {
   return Message(
-    name: json['name'] as String,
-    data: json['data'] as Map<String, dynamic>,
+    name: json['name'] as String?,
+    data: json['data'] as Map<String, dynamic>?,
     notification: json['notification'] == null
         ? null
         : MessageNotification.fromJson(
@@ -29,9 +29,9 @@ Message _$MessageFromJson(Map<String, dynamic> json) {
         ? null
         : MessageFcmOptions.fromJson(
             json['fcm_options'] as Map<String, dynamic>),
-    token: json['token'] as String,
-    topic: json['topic'] as String,
-    condition: json['condition'] as String,
+    token: json['token'] as String?,
+    topic: json['topic'] as String?,
+    condition: json['condition'] as String?,
   );
 }
 
@@ -59,9 +59,9 @@ Map<String, dynamic> _$MessageToJson(Message instance) {
 
 MessageNotification _$MessageNotificationFromJson(Map<String, dynamic> json) {
   return MessageNotification(
-    title: json['title'] as String,
-    body: json['body'] as String,
-    image: json['image'] as String,
+    title: json['title'] as String?,
+    body: json['body'] as String?,
+    image: json['image'] as String?,
   );
 }
 
@@ -82,11 +82,11 @@ Map<String, dynamic> _$MessageNotificationToJson(MessageNotification instance) {
 
 MessageAndroidConfig _$MessageAndroidConfigFromJson(Map<String, dynamic> json) {
   return MessageAndroidConfig(
-    collapse_key: json['collapse_key'] as String,
-    priority: json['priority'] as String,
-    ttl: json['ttl'] as String,
-    restricted_package_name: json['restricted_package_name'] as String,
-    data: json['data'] as Map<String, dynamic>,
+    collapse_key: json['collapse_key'] as String?,
+    priority: json['priority'] as String?,
+    ttl: json['ttl'] as String?,
+    restricted_package_name: json['restricted_package_name'] as String?,
+    data: json['data'] as Map<String, dynamic>?,
     notification: json['notification'] == null
         ? null
         : MessageAndroidNotification.fromJson(
@@ -95,7 +95,7 @@ MessageAndroidConfig _$MessageAndroidConfigFromJson(Map<String, dynamic> json) {
         ? null
         : MessageAndroidFcmOptions.fromJson(
             json['fcm_options'] as Map<String, dynamic>),
-    direct_boot_ok: json['direct_boot_ok'] as bool,
+    direct_boot_ok: json['direct_boot_ok'] as bool?,
   );
 }
 
@@ -123,37 +123,40 @@ Map<String, dynamic> _$MessageAndroidConfigToJson(
 MessageAndroidNotification _$MessageAndroidNotificationFromJson(
     Map<String, dynamic> json) {
   return MessageAndroidNotification(
-    title: json['title'] as String,
-    body: json['body'] as String,
-    icon: json['icon'] as String,
-    color: json['color'] as String,
-    sound: json['sound'] as String,
-    tag: json['tag'] as String,
-    click_action: json['click_action'] as String,
-    body_loc_key: json['body_loc_key'] as String,
-    body_loc_args:
-        (json['body_loc_args'] as List)?.map((e) => e as String)?.toList(),
-    title_loc_key: json['title_loc_key'] as String,
-    title_loc_args:
-        (json['title_loc_args'] as List)?.map((e) => e as String)?.toList(),
-    channel_id: json['channel_id'] as String,
-    ticker: json['ticker'] as String,
-    sticky: json['sticky'] as bool,
-    event_time: json['event_time'] as String,
-    local_only: json['local_only'] as bool,
-    notification_priority: json['notification_priority'] as String,
-    default_sound: json['default_sound'] as bool,
-    default_vibrate_timings: json['default_vibrate_timings'] as bool,
-    default_light_settings: json['default_light_settings'] as bool,
-    vibrate_timings:
-        (json['vibrate_timings'] as List)?.map((e) => e as String)?.toList(),
-    visibility: json['visibility'] as String,
-    notification_count: json['notification_count'] as int,
+    title: json['title'] as String?,
+    body: json['body'] as String?,
+    icon: json['icon'] as String?,
+    color: json['color'] as String?,
+    sound: json['sound'] as String?,
+    tag: json['tag'] as String?,
+    click_action: json['click_action'] as String?,
+    body_loc_key: json['body_loc_key'] as String?,
+    body_loc_args: (json['body_loc_args'] as List<dynamic>?)
+        ?.map((e) => e as String)
+        .toList(),
+    title_loc_key: json['title_loc_key'] as String?,
+    title_loc_args: (json['title_loc_args'] as List<dynamic>?)
+        ?.map((e) => e as String)
+        .toList(),
+    channel_id: json['channel_id'] as String?,
+    ticker: json['ticker'] as String?,
+    sticky: json['sticky'] as bool?,
+    event_time: json['event_time'] as String?,
+    local_only: json['local_only'] as bool?,
+    notification_priority: json['notification_priority'] as String?,
+    default_sound: json['default_sound'] as bool?,
+    default_vibrate_timings: json['default_vibrate_timings'] as bool?,
+    default_light_settings: json['default_light_settings'] as bool?,
+    vibrate_timings: (json['vibrate_timings'] as List<dynamic>?)
+        ?.map((e) => e as String)
+        .toList(),
+    visibility: json['visibility'] as String?,
+    notification_count: json['notification_count'] as int?,
     light_settings: json['light_settings'] == null
         ? null
         : MessageLightSettings.fromJson(
             json['light_settings'] as Map<String, dynamic>),
-    image: json['image'] as String,
+    image: json['image'] as String?,
   );
 }
 
@@ -202,8 +205,8 @@ MessageLightSettings _$MessageLightSettingsFromJson(Map<String, dynamic> json) {
     color: json['color'] == null
         ? null
         : MessageColor.fromJson(json['color'] as Map<String, dynamic>),
-    light_on_duration: json['light_on_duration'] as String,
-    light_off_duration: json['light_off_duration'] as String,
+    light_on_duration: json['light_on_duration'] as String?,
+    light_off_duration: json['light_off_duration'] as String?,
   );
 }
 
@@ -225,10 +228,10 @@ Map<String, dynamic> _$MessageLightSettingsToJson(
 
 MessageColor _$MessageColorFromJson(Map<String, dynamic> json) {
   return MessageColor(
-    red: (json['red'] as num)?.toDouble(),
-    green: (json['green'] as num)?.toDouble(),
-    blue: (json['blue'] as num)?.toDouble(),
-    alpha: (json['alpha'] as num)?.toDouble(),
+    red: (json['red'] as num?)?.toDouble(),
+    green: (json['green'] as num?)?.toDouble(),
+    blue: (json['blue'] as num?)?.toDouble(),
+    alpha: (json['alpha'] as num?)?.toDouble(),
   );
 }
 
@@ -251,7 +254,7 @@ Map<String, dynamic> _$MessageColorToJson(MessageColor instance) {
 MessageAndroidFcmOptions _$MessageAndroidFcmOptionsFromJson(
     Map<String, dynamic> json) {
   return MessageAndroidFcmOptions(
-    analytics_label: json['analytics_label'] as String,
+    analytics_label: json['analytics_label'] as String?,
   );
 }
 
@@ -271,10 +274,10 @@ Map<String, dynamic> _$MessageAndroidFcmOptionsToJson(
 
 MessageWebpushConfig _$MessageWebpushConfigFromJson(Map<String, dynamic> json) {
   return MessageWebpushConfig(
-    headers: (json['headers'] as Map<String, dynamic>)?.map(
+    headers: (json['headers'] as Map<String, dynamic>?)?.map(
       (k, e) => MapEntry(k, e as String),
     ),
-    data: (json['data'] as Map<String, dynamic>)?.map(
+    data: (json['data'] as Map<String, dynamic>?)?.map(
       (k, e) => MapEntry(k, e as String),
     ),
     notification: json['notification'],
@@ -305,8 +308,8 @@ Map<String, dynamic> _$MessageWebpushConfigToJson(
 MessageWebpushFcmOptions _$MessageWebpushFcmOptionsFromJson(
     Map<String, dynamic> json) {
   return MessageWebpushFcmOptions(
-    link: json['link'] as String,
-    analytics_label: json['analytics_label'] as String,
+    link: json['link'] as String?,
+    analytics_label: json['analytics_label'] as String?,
   );
 }
 
@@ -327,7 +330,7 @@ Map<String, dynamic> _$MessageWebpushFcmOptionsToJson(
 
 MessageApnsConfig _$MessageApnsConfigFromJson(Map<String, dynamic> json) {
   return MessageApnsConfig(
-    headers: (json['headers'] as Map<String, dynamic>)?.map(
+    headers: (json['headers'] as Map<String, dynamic>?)?.map(
       (k, e) => MapEntry(k, e as String),
     ),
     payload: json['payload'],
@@ -356,8 +359,8 @@ Map<String, dynamic> _$MessageApnsConfigToJson(MessageApnsConfig instance) {
 MessageApnsFcmOptions _$MessageApnsFcmOptionsFromJson(
     Map<String, dynamic> json) {
   return MessageApnsFcmOptions(
-    analytics_label: json['analytics_label'] as String,
-  )..image = json['image'] as String;
+    analytics_label: json['analytics_label'] as String?,
+  )..image = json['image'] as String?;
 }
 
 Map<String, dynamic> _$MessageApnsFcmOptionsToJson(
@@ -377,7 +380,7 @@ Map<String, dynamic> _$MessageApnsFcmOptionsToJson(
 
 MessageFcmOptions _$MessageFcmOptionsFromJson(Map<String, dynamic> json) {
   return MessageFcmOptions(
-    analytics_label: json['analytics_label'] as String,
+    analytics_label: json['analytics_label'] as String?,
   );
 }
 
@@ -396,7 +399,7 @@ Map<String, dynamic> _$MessageFcmOptionsToJson(MessageFcmOptions instance) {
 
 Response _$ResponseFromJson(Map<String, dynamic> json) {
   return Response(
-    name: json['name'] as String,
+    name: json['name'] as String?,
   );
 }
 

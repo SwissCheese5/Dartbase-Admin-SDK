@@ -4,30 +4,30 @@ import 'models.dart';
 
 class Firestore {
   /* Singleton instance */
-  static Firestore _instance;
+  static Firestore? _instance;
 
   static bool get initialized => _instance != null;
 
   static Firestore initialize(
-      {Firebase firebase, String databaseId = '(default)'}) {
+      {Firebase? firebase, String databaseId = '(default)'}) {
     assert(!initialized,
         'Firestore global instance is already initialized. Do not call this twice or create a local instance via Firestore()');
 
     _instance = Firestore(
         firebase: firebase ?? Firebase.instance, databaseId: databaseId);
-    return _instance;
+    return _instance!;
   }
 
   static Firestore get instance {
     assert(initialized,
         "Firestore hasn't been initialized. Call Firestore.initialize() before using this global instance. Alternatively, create a local instance via Firestore() and use that.");
 
-    return _instance;
+    return _instance!;
   }
 
   /* Instance interface */
   final FirestoreGateway _gateway;
-  final Firebase firebase;
+  final Firebase? firebase;
 
   Firestore({this.firebase, String databaseId = '(default)'})
       : assert(firebase != null || Firebase.initialized,
