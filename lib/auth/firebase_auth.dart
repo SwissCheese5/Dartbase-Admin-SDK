@@ -6,28 +6,28 @@ import 'user_record.dart';
 
 class FirebaseAuth {
   /* Singleton instance */
-  static FirebaseAuth _instance;
+  static FirebaseAuth? _instance;
 
   static bool get initialized => _instance != null;
 
-  static FirebaseAuth initialize({Firebase firebase}) {
+  static FirebaseAuth initialize({Firebase? firebase}) {
     assert(!initialized,
         'Firebase Auth global instance is already initialized. Do not call this twice or create a local instance via FirebaseAuth()');
 
     _instance = FirebaseAuth(firebase: firebase ?? Firebase.instance);
-    return _instance;
+    return _instance!;
   }
 
   static FirebaseAuth get instance {
     assert(initialized,
         "Firebase Auth hasn't been initialized. Call FirebaseAuth.initialize() before using this global instance. Alternatively, create a local instance via FirebaseAuth() and use that.");
 
-    return _instance;
+    return _instance!;
   }
 
   /* Instance interface */
   final UserGateway _userGateway;
-  final Firebase firebase;
+  final Firebase? firebase;
 
   FirebaseAuth({this.firebase})
       : assert(firebase != null || Firebase.initialized,

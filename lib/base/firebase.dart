@@ -6,7 +6,7 @@ import 'client.dart';
 /// For service accounts, you can use ServiceAccount.fromJson(String) or ServiceAccount.fromEnvironmentVariable(optional String)
 /// Using the environment variable implementation will crash if you are on a platform that dart:io does not support.
 class Firebase {
-  static Firebase _instance;
+  static late Firebase _instance;
 
   static bool get initialized => _instance != null;
 
@@ -28,7 +28,7 @@ class Firebase {
   final String projectId;
   final ServiceAccount serviceAccount;
 
-  AdminClient client;
+  AdminClient? client;
 
   Firebase(this.projectId, this.serviceAccount);
 

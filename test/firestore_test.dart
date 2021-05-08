@@ -7,8 +7,8 @@ import 'package:test/test.dart';
 import 'test_config.dart';
 
 Future main() async {
-  Firebase firebase;
-  Firestore firestore;
+  late Firebase firebase;
+  late Firestore firestore;
 
   setUpAll(() async {
     firebase = await Firebase.initialize(

@@ -9,42 +9,42 @@ part 'message.g.dart';
 class Message {
   /// Output Only. The identifier of the message sent, in the format of
   /// projects/*/messages/{message_id}.
-  final String name;
+  final String? name;
 
   /// Input only. Arbitrary key/value payload. The key should not be a reserved
   /// word ("from", "message_type", or any word starting with "google" or "gcm").
   /// An object containing a list of "key": value pairs. Example:
   /// { "name": "wrench", "mass": "1.3kg", "count": "3" }.
-  final Map<String, dynamic> data;
+  final Map<String, dynamic>? data;
 
   /// Input only. Basic notification template to use across all platforms.
-  final MessageNotification notification;
+  final MessageNotification? notification;
 
   /// Input only. Android specific options for messages sent through FCM
   /// connection server.
-  final MessageAndroidConfig android;
+  final MessageAndroidConfig? android;
 
   /// Input only. Webpush protocol options.
-  final MessageWebpushConfig webpush;
+  final MessageWebpushConfig? webpush;
 
   /// Input only. Apple Push Notification Service specific options.
-  final MessageApnsConfig apns;
+  final MessageApnsConfig? apns;
 
   /// Input only. Template for FCM SDK feature options to use across all platforms.
-  final MessageFcmOptions fcm_options;
+  final MessageFcmOptions? fcm_options;
 
   /// Union field target. Required. Input only. Target to send a message to.
   /// target can be only one of the following:
 
   /// Registration token to send a message to.
-  final String token;
+  final String? token;
 
   /// Topic name to send a message to, e.g. "weather". Note: "/topics/" prefix
   /// should not be provided.
-  final String topic;
+  final String? topic;
 
   /// Condition to send a message to, e.g. "'foo' in topics && 'bar' in topics".
-  final String condition;
+  final String? condition;
 
   Message({
     this.name,
@@ -70,10 +70,10 @@ class Message {
 @JsonSerializable(explicitToJson: true, includeIfNull: false)
 class MessageNotification {
   /// The notification's title.
-  String title;
+  String? title;
 
   /// The notification's body text.
-  String body;
+  String? body;
 
   /// Contains the URL of an image that is going to be downloaded on the device
   /// and displayed in a notification. JPEG, PNG, BMP have full support across
@@ -81,7 +81,7 @@ class MessageNotification {
   /// varying levels of support across platforms and platform versions. Android
   /// has 1MB image size limit. Quota usage and implications/costs for hosting
   /// image on Firebase Storage: https://firebase.google.com/pricing
-  String image;
+  String? image;
 
   MessageNotification({this.title, this.body, this.image});
 
@@ -98,11 +98,11 @@ class MessageAndroidConfig {
   /// An identifier of a group of messages that can be collapsed, so that only
   /// the last message gets sent when delivery can be resumed. A maximum of 4
   /// different collapse keys is allowed at any given time.
-  String collapse_key;
+  String? collapse_key;
 
   /// Message priority. Can take "normal" and "high" values. For more
   /// information, see Setting the priority of a message.
-  String priority;
+  String? priority;
 
   /// How long (in seconds) the message should be kept in FCM storage if the
   /// device is offline. The maximum time to live supported is 4 weeks, and the
@@ -116,27 +116,27 @@ class MessageAndroidConfig {
   /// The ttl will be rounded down to the nearest second.
   /// A duration in seconds with up to nine fractional digits, terminated by
   /// 's'. Example: "3.5s".
-  String ttl;
+  String? ttl;
 
   /// Package name of the application where the registration token must match
   /// in order to receive the message.
-  String restricted_package_name;
+  String? restricted_package_name;
 
   /// Arbitrary key/value payload. If present, it will override
   /// google.firebase.fcm.v1.Message.data.
   /// An object containing a list of "key": value pairs. Example:
   /// { "name": "wrench", "mass": "1.3kg", "count": "3" }.
-  Map<String, dynamic> data;
+  Map<String, dynamic>? data;
 
   /// Notification to send to android devices.
-  MessageAndroidNotification notification;
+  MessageAndroidNotification? notification;
 
   /// Options for features provided by the FCM SDK for Android.
-  MessageAndroidFcmOptions fcm_options;
+  MessageAndroidFcmOptions? fcm_options;
 
   /// If set to true, messages will be allowed to be delivered to the app while
   /// the device is in direct boot mode. See Support Direct Boot mode.
-  bool direct_boot_ok;
+  bool? direct_boot_ok;
 
   MessageAndroidConfig({
     this.collapse_key,
@@ -161,85 +161,85 @@ class MessageAndroidConfig {
 class MessageAndroidNotification {
   /// The notification's title. If present, it will override
   /// google.firebase.fcm.v1.Notification.title.
-  String title;
+  String? title;
 
   /// The notification's body text. If present, it will override
   /// google.firebase.fcm.v1.Notification.body.
-  String body;
+  String? body;
 
   /// The notification's icon. Sets the notification icon to myicon for drawable
   /// resource myicon. If you don't send this key in the request, FCM displays
   /// the launcher icon specified in your app manifest.
-  String icon;
+  String? icon;
 
   /// The notification's icon color, expressed in #rrggbb format.
-  String color;
+  String? color;
 
   /// The sound to play when the device receives the notification. Supports
   /// "default" or the filename of a sound resource bundled in the app. Sound
   /// files must reside in /res/raw/.
-  String sound;
+  String? sound;
 
   /// Identifier used to replace existing notifications in the notification
   /// drawer. If not specified, each request creates a new notification. If
   /// specified and a notification with the same tag is already being shown, the
   /// new notification replaces the existing one in the notification drawer.
-  String tag;
+  String? tag;
 
   /// The action associated with a user click on the notification. If specified,
   /// an activity with a matching intent filter is launched when a user clicks
   /// on the notification.
-  String click_action;
+  String? click_action;
 
   /// The key to the body string in the app's string resources to use to
   /// localize the body text to the user's current localization. See String
   /// Resources for more information.
-  String body_loc_key;
+  String? body_loc_key;
 
   /// Variable string values to be used in place of the format specifiers in
   /// body_loc_key to use to localize the body text to the user's current
   /// localization. See Formatting and Styling for more information.
-  List<String> body_loc_args;
+  List<String>? body_loc_args;
 
   /// The key to the title string in the app's string resources to use to
   /// localize the title text to the user's current localization. See String
   /// Resources for more information.
-  String title_loc_key;
+  String? title_loc_key;
 
   /// Variable string values to be used in place of the format specifiers in
   /// title_loc_key to use to localize the title text to the user's current
   /// localization. See Formatting and Styling for more information.
-  List<String> title_loc_args;
+  List<String>? title_loc_args;
 
   /// The notification's channel id (new in Android O). The app must create a
   /// channel with this channel ID before any notification with this channel ID
   /// is received. If you don't send this channel ID in the request, or if the
   /// channel ID provided has not yet been created by the app, FCM uses the
   /// channel ID specified in the app manifest.
-  String channel_id;
+  String? channel_id;
 
   /// Sets the "ticker" text, which is sent to accessibility services. Prior to
   /// API level 21 (Lollipop), sets the text that is displayed in the status bar
   /// when the notification first arrives.
-  String ticker;
+  String? ticker;
 
   /// When set to false or unset, the notification is automatically dismissed
   /// when the user clicks it in the panel. When set to true, the notification
   /// persists even when the user clicks it.
-  bool sticky;
+  bool? sticky;
 
   /// Set the time that the event in the notification occurred. Notifications in
   /// the panel are sorted by this time. A point in time is represented using
   /// protobuf.Timestamp.
   /// A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds.
   /// Example: "2014-10-02T15:01:23.045123456Z".
-  String event_time;
+  String? event_time;
 
   /// Set whether or not this notification is relevant only to the current
   /// device. Some notifications can be bridged to other devices for remote
   /// display, such as a Wear OS watch. This hint can be set to recommend this
   /// notification not be bridged. See Wear OS guides
-  bool local_only;
+  bool? local_only;
 
   /// Set the relative priority for this notification. Priority is an indication
   /// of how much of the user's attention should be consumed by this
@@ -278,23 +278,23 @@ class MessageAndroidNotification {
   ///   "PRIORITY_MAX" - Highest notification priority. Use this for the
   /// application's most
   /// important items that require the user's prompt attention or input.
-  String notification_priority;
+  String? notification_priority;
 
   /// If set to true, use the Android framework's default sound for the
   /// notification. Default values are specified in config.xml.
-  bool default_sound;
+  bool? default_sound;
 
   /// If set to true, use the Android framework's default vibrate pattern for
   /// the notification. Default values are specified in config.xml. If
   /// default_vibrate_timings is set to true and vibrate_timings is also set,
   /// the default value is used instead of the user-specified vibrate_timings.
-  bool default_vibrate_timings;
+  bool? default_vibrate_timings;
 
   /// If set to true, use the Android framework's default LED light settings for
   /// the notification. Default values are specified in config.xml. If
   /// default_light_settings is set to true and light_settings is also set, the
   /// user-specified light_settings is used instead of the default value.
-  bool default_light_settings;
+  bool? default_light_settings;
 
   /// Set the vibration pattern to use. Pass in an array of protobuf.Duration to
   /// turn on or off the vibrator. The first value indicates the Duration to
@@ -306,7 +306,7 @@ class MessageAndroidNotification {
   ///
   /// A duration in seconds with up to nine fractional digits, terminated by
   /// 's'. Example: "3.5s".
-  List<String> vibrate_timings;
+  List<String>? vibrate_timings;
 
   /// Visibility: Set
   /// the
@@ -324,7 +324,7 @@ class MessageAndroidNotification {
   /// lockscreens.
   ///   "SECRET" - Do not reveal any part of this notification on a secure
   /// lockscreen.
-  String visibility;
+  String? visibility;
 
   /// Sets the number of items this notification represents. May be displayed as
   /// a badge count for launchers that support badging.See Notification Badge.
@@ -333,17 +333,17 @@ class MessageAndroidNotification {
   /// the number of total new messages. If zero or unspecified, systems that
   /// support badging use the default, which is to increment a number displayed
   /// on the long-press menu each time a new notification arrives.
-  int notification_count;
+  int? notification_count;
 
   /// Settings to control the notification's LED blinking rate and color if LED
   /// is available on the device. The total blinking time is controlled by the
   /// OS.
-  MessageLightSettings light_settings;
+  MessageLightSettings? light_settings;
 
   /// Contains the URL of an image that is going to be displayed in a
   /// notification. If present, it will override
   /// google.firebase.fcm.v1.Notification.image.
-  String image;
+  String? image;
 
   MessageAndroidNotification({
     this.title,
@@ -385,7 +385,7 @@ class MessageAndroidNotification {
 class MessageLightSettings {
   /// Required. Set color of the LED with google.type.Color.
   @JsonKey(required: true)
-  MessageColor color;
+  MessageColor? color;
 
   /// Required. Along with light_off_duration, define the blink rate of LED
   /// flashes. Resolution defined by proto.Duration
@@ -393,7 +393,7 @@ class MessageLightSettings {
   /// A duration in seconds with up to nine fractional digits, terminated by
   /// 's'. Example: "3.5s".
   @JsonKey(required: true)
-  String light_on_duration;
+  String? light_on_duration;
 
   /// Required. Along with light_on_duration, define the blink rate of LED
   /// flashes. Resolution defined by proto.Duration
@@ -401,7 +401,7 @@ class MessageLightSettings {
   /// A duration in seconds with up to nine fractional digits, terminated by
   /// 's'. Example: "3.5s".
   @JsonKey(required: true)
-  String light_off_duration;
+  String? light_off_duration;
 
   MessageLightSettings({
     @required this.color,
@@ -420,13 +420,13 @@ class MessageLightSettings {
 @JsonSerializable(includeIfNull: false)
 class MessageColor {
   /// The amount of red in the color as a value in the interval [0, 1].
-  double red;
+  double? red;
 
   /// The amount of green in the color as a value in the interval [0, 1].
-  double green;
+  double? green;
 
   /// The amount of blue in the color as a value in the interval [0, 1].
-  double blue;
+  double? blue;
 
   /// The fraction of this color that should be applied to the pixel. That is,
   /// the final pixel color is defined by the equation:
@@ -439,7 +439,7 @@ class MessageColor {
   /// to distinguish between a default value and the value being unset. If
   /// omitted, this color object is to be rendered as a solid color (as if the
   /// alpha value had been explicitly given with a value of 1.0).
-  double alpha;
+  double? alpha;
 
   MessageColor({
     this.red,
@@ -459,7 +459,7 @@ class MessageColor {
 @JsonSerializable(includeIfNull: false)
 class MessageAndroidFcmOptions {
   /// Label associated with the message's analytics data.
-  String analytics_label;
+  String? analytics_label;
 
   MessageAndroidFcmOptions({
     this.analytics_label,
@@ -480,23 +480,23 @@ class MessageWebpushConfig {
   ///
   /// An object containing a list of "key": value pairs. Example:
   /// { "name": "wrench", "mass": "1.3kg", "count": "3" }.
-  Map<String, String> headers;
+  Map<String, String>? headers;
 
   /// Arbitrary key/value payload. If present, it will override
   /// google.firebase.fcm.v1.Message.data.
   ///
   /// An object containing a list of "key": value pairs. Example:
   /// { "name": "wrench", "mass": "1.3kg", "count": "3" }.
-  Map<String, String> data;
+  Map<String, String>? data;
 
   /// Web Notification options as a JSON object. Supports Notification instance
   /// properties as defined in Web Notification API. If present, "title" and
   /// "body" fields override google.firebase.fcm.v1.Notification.title and
   /// google.firebase.fcm.v1.Notification.body.
-  Object notification;
+  Object? notification;
 
   /// Options for features provided by the FCM SDK for Web.
-  MessageWebpushFcmOptions fcm_options;
+  MessageWebpushFcmOptions? fcm_options;
 
   MessageWebpushConfig({
     this.headers,
@@ -517,10 +517,10 @@ class MessageWebpushConfig {
 class MessageWebpushFcmOptions {
   /// The link to open when the user clicks on the notification. For all URL
   /// values, HTTPS is required.
-  String link;
+  String? link;
 
   /// Label associated with the message's analytics data.
-  String analytics_label;
+  String? analytics_label;
 
   MessageWebpushFcmOptions({
     this.link,
@@ -542,17 +542,17 @@ class MessageApnsConfig {
   ///
   /// An object containing a list of "key": value pairs.
   /// Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.
-  Map<String, String> headers;
+  Map<String, String>? headers;
 
   /// AHTTP request headers defined in Apple Push Notification Service. Refer to
   /// APNs request headers for supported headers, e.g. "apns-priority": "10".
   ///
   /// An object containing a list of "key": value pairs. Example:
   /// { "name": "wrench", "mass": "1.3kg", "count": "3" }.
-  Object payload;
+  Object? payload;
 
   /// Options for features provided by the FCM SDK for iOS.
-  MessageApnsFcmOptions fcm_options;
+  MessageApnsFcmOptions? fcm_options;
 
   MessageApnsConfig({
     this.headers,
@@ -571,12 +571,12 @@ class MessageApnsConfig {
 @JsonSerializable(includeIfNull: false)
 class MessageApnsFcmOptions {
   /// Label associated with the message's analytics data.
-  String analytics_label;
+  String? analytics_label;
 
   /// Contains the URL of an image that is going to be displayed in a
   /// notification. If present, it will override
   /// google.firebase.fcm.v1.Notification.image.
-  String image;
+  String? image;
 
   MessageApnsFcmOptions({
     this.analytics_label,
@@ -593,7 +593,7 @@ class MessageApnsFcmOptions {
 @JsonSerializable(includeIfNull: false)
 class MessageFcmOptions {
   /// Label associated with the message's analytics data.
-  String analytics_label;
+  String? analytics_label;
 
   MessageFcmOptions({
     this.analytics_label,
@@ -638,7 +638,7 @@ class ApnsError implements Exception {
 
 @JsonSerializable(includeIfNull: false)
 class Response {
-  String name;
+  String? name;
 
   Response({this.name});
 

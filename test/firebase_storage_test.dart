@@ -26,7 +26,7 @@ Future main() async {
             response.pipe(localFile.openWrite()));
   });
 
-  await test('Storage upload', () async {
+  test('Storage upload', () async {
     expect(await localFile.exists(), true);
 
     await bucket.upload(
@@ -39,14 +39,14 @@ Future main() async {
     print(info.downloadLink);
   });
 
-  await test('Storage download', () async {
+  test('Storage download', () async {
     await bucket.download(
         'remoteDirectory/remoteFile.jpg', localFile.absolute.path);
 
     expect(await localFile.exists(), true);
   });
 
-  await test('Storage list', () async {
+  test('Storage list', () async {
     var list = await (await bucket.list(prefix: 'remoteDirectory/')).toList();
 
     expect(list.isNotEmpty, true);
@@ -54,7 +54,7 @@ Future main() async {
     print(list.map((e) => e.name).toList().join('\n'));
   });
 
-  await test('Storage delete', () async {
+  test('Storage delete', () async {
     await bucket.delete('remoteDirectory/remoteFile.jpg');
 
     try {

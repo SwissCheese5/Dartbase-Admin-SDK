@@ -14,41 +14,41 @@ class FCMConfig {
   static const bool keepAlive = false;
   final headers = <String, String>{};
 
-  Firebase firebase;
+  Firebase? firebase;
 
-  FCMConfig({Firebase firebase}) {
+  FCMConfig({Firebase? firebase}) {
     this.firebase = firebase ?? Firebase.instance;
   }
 
-  String get path => '/v1/projects/${firebase.projectId}/messages:send';
+  String get path => '/v1/projects/${firebase!.projectId}/messages:send';
 }
 
 class FCM {
   /* Singleton instance */
-  static FCM _instance;
+  static FCM? _instance;
 
   static bool get initialized => _instance != null;
 
-  static FCM initialize({Firebase firebase, FCMConfig fcmConfig}) {
+  static FCM initialize({Firebase? firebase, FCMConfig? fcmConfig}) {
     assert(!initialized,
         'FCM global instance is already initialized. Do not call this twice or create a local instance via FCM()');
 
     _instance = FCM(
         firebase: firebase ?? Firebase.instance,
         fcmConfig: fcmConfig ?? FCMConfig(firebase: firebase));
-    return _instance;
+    return _instance!;
   }
 
   static FCM get instance {
     assert(initialized,
         "FCM hasn't been initialized. Call Firestore.initialize() before using this global instance. Alternatively, create a local instance via FCM() and use that.");
 
-    return _instance;
+    return _instance!;
   }
 
   /* Instance interface */
-  final Firebase firebase;
-  FCMConfig fcmConfig;
+  final Firebase? firebase;
+  FCMConfig? fcmConfig;
 
   FCM({this.firebase, this.fcmConfig})
       : assert(firebase != null || Firebase.initialized,
@@ -69,17 +69,17 @@ class FCM {
         Uri(
           scheme: FCMConfig.scheme,
           host: FCMConfig.host,
-          path: fcmConfig.path,
+          path: fcmConfig!.path,
         ));
     request.body = json.encode({'message': message.toJson()});
 
-    var response = await firebase.client.send(request);
+    var response = await firebase!.client!.send(request);
     var responseContent = await response.stream.bytesToString();
     if (response.statusCode >= 400) {
       throw FcmError(responseContent);
     }
 
     var responseMessage = Response.fromJson(json.decode(responseContent));
-    return responseMessage.name;
+    return responseMessage.name!;
   }
 }

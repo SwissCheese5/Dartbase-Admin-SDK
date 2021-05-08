@@ -13,7 +13,7 @@ class Jwt {
 
   // Returns subject uid if token is valid. Throws exception otherwise.
   Future<String> validate(Map<String, String> certificates,
-      {FirebaseAuth firebaseAuth, bool checkRevoked = false}) async {
+      {FirebaseAuth? firebaseAuth, bool checkRevoked = false}) async {
     assert(firebaseAuth != null || FirebaseAuth.initialized,
         "Firebase Auth hasn't been initialized. Call FirebaseAuth.initialize() before using this global instance. Alternatively, create a local instance via FirebaseAuth() and use that.");
 
@@ -28,9 +28,9 @@ class Jwt {
 
     /// CREATE A VALIDATOR TO MATCH OUR FIREBASE PROJECT
     var validator = JWTValidator()
-      ..audience = firebaseAuth.firebase.projectId
+      ..audience = firebaseAuth!.firebase!.projectId
       ..issuer =
-          'https://securetoken.google.com/${firebaseAuth.firebase.projectId}';
+          'https://securetoken.google.com/${firebaseAuth.firebase!.projectId}';
 
     /// RUN VALIDATION
     var errors = validator.validate(decodedToken);
@@ -39,8 +39,8 @@ class Jwt {
     }
 
     /// GET GOOGLE PUBLIC KEYS
-    var response = await http.get(
-        'https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com');
+    var response = await http.get(Uri.parse(
+        'https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com'));
     Map<String, dynamic> publicKeys = jsonDecode(response.body);
 
     /// RUN SIGNATURE VERIFICATION
@@ -78,7 +78,7 @@ class Jwt {
         final authTimeUtc =
             DateTime.fromMillisecondsSinceEpoch(decodedToken.issuedAt * 1000);
         final validSinceUtc = user.tokensValidAfterTime;
-        if (authTimeUtc.isBefore(validSinceUtc)) {
+        if (authTimeUtc.isBefore(validSinceUtc!)) {
           throw TokenValidationException('Token is revoked');
         }
       }

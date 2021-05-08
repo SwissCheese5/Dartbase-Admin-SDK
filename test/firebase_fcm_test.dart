@@ -10,10 +10,10 @@ Future main() async {
   setUpAll(() async {
     await Firebase.initialize(
         projectId, await ServiceAccount.fromFile(serviceAccountPath));
-    await FCM.initialize();
+    FCM.initialize();
   });
 
-  await test('Send message with token', () async {
+  test('Send message with token', () async {
     var message = Message(
       token: cloudMessagingToken,
       notification: MessageNotification(
@@ -25,7 +25,7 @@ Future main() async {
     expect(nameRegExp.hasMatch(name), true);
   });
 
-  await test('Send message with topic', () async {
+  test('Send message with topic', () async {
     var message = Message(
       topic: cloudMessagingTopic,
       notification: MessageNotification(
